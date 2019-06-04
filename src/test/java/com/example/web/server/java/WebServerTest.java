@@ -12,7 +12,7 @@ public class WebServerTest {
 	@Test
 	public void test() throws Exception {
 		// ## Arrange ##
-		val input = new ByteArrayInputStream("hoge".getBytes());
+		val input = new ByteArrayInputStream("GET /index.html HTTP/1.1".getBytes());
 		val server = new WebServer();
 
 		// ## Act ##
