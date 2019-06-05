@@ -9,7 +9,8 @@ public class WebServer {
 
 	public OutputStream execute(ByteArrayInputStream input) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		out.write("test".getBytes());
+		out.write("HTTP/1.1 200 OK".getBytes());
+		out.write("Date: Wed, 05 Jun 2019 04:02:51 GMT".getBytes());
 		return out;
 	}
 }
