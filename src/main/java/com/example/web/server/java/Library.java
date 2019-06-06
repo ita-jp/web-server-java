@@ -4,7 +4,7 @@
 package com.example.web.server.java;
 
 public class Library {
-    public boolean someLibraryMethod() {
-        return true;
-    }
+	public boolean someLibraryMethod() {
+		return true;
+	}
 }

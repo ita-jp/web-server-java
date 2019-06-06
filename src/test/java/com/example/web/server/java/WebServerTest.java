@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class WebServerTest {
 
@@ -15,18 +17,17 @@ public class WebServerTest {
 	public void test() throws Exception {
 		// ## Arrange ##
 		val input = new ByteArrayInputStream("GET /index.html HTTP/1.1".getBytes());
-		val server = new WebServer();
+		val timeManager = mock(TimeManager.class);
+		val time = "Wed, 05 Jun 2019 04:02:51 GMT";
+		when(timeManager.nowAsRFC7231()).thenReturn(time);
+		val server = new WebServer(timeManager);
 
 		// ## Act ##
 		val output = server.execute(input);
 
 		// ## Assert
 		val actual = output.toString();
-		assertThat(actual).isEqualTo(MultiLineStringBuilder.begin()
-				.s("HTTP/1.1 200 OK")
-				.s("Date: Wed, 05 Jun 2019 04:02:51 GMT")
-				.end()
-		);
+		assertThat(actual).isEqualTo(MultiLineStringBuilder.begin().s("HTTP/1.1 200 OK").n().s("Date: ").s(time).end());
 	}
 
 	@NoArgsConstructor
