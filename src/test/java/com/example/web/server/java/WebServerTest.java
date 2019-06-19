@@ -27,7 +27,15 @@ public class WebServerTest {
 
 		// ## Assert
 		val actual = output.toString();
-		assertThat(actual).isEqualTo(MultiLineStringBuilder.begin().s("HTTP/1.1 200 OK").n().s("Date: ").s(time).end());
+		// @formatter:off
+		assertThat(actual).isEqualTo(MultiLineStringBuilder.begin()
+				.s("HTTP/1.1 200 OK").n()
+				.s("Date: ").s(time).n()
+				.s("Server: MyServer/0.1").n()
+				.s("Connection: Close").n()
+				.s("Content-Type: text/html").n()
+				.end());
+		// @formatter:on
 	}
 
 	@NoArgsConstructor
