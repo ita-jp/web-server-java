@@ -12,15 +12,17 @@ import static org.mockito.Mockito.when;
 
 public class WebServerTest {
 
+	private static String DOCUMENT_ROOT = "src/test/resources";
+
 	// try $ curl example.com --head
 	@Test
 	public void test() throws Exception {
 		// ## Arrange ##
-		val input = new ByteArrayInputStream("GET /index.html HTTP/1.1".getBytes());
+		val input = new ByteArrayInputStream("GET test.html HTTP/1.1".getBytes());
 		val timeManager = mock(TimeManager.class);
 		val time = "Wed, 05 Jun 2019 04:02:51 GMT";
 		when(timeManager.nowAsRFC7231()).thenReturn(time);
-		val server = new WebServer(timeManager);
+		val server = new WebServer(timeManager, DOCUMENT_ROOT);
 
 		// ## Act ##
 		val output = server.execute(input);
@@ -34,6 +36,8 @@ public class WebServerTest {
 				.s("Server: MyServer/0.1").n()
 				.s("Connection: Close").n()
 				.s("Content-Type: text/html").n()
+				.n()
+				.s("<b>It works!</b>")
 				.end());
 		// @formatter:on
 	}
