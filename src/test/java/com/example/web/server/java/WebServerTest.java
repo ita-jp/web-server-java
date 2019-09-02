@@ -5,6 +5,7 @@ import lombok.val;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
@@ -25,7 +26,8 @@ public class WebServerTest {
 		val server = new WebServer(timeManager, DOCUMENT_ROOT);
 
 		// ## Act ##
-		val output = server.execute(input);
+		val output = new ByteArrayOutputStream();
+		server.execute(input, output);
 
 		// ## Assert
 		val actual = output.toString();

@@ -17,8 +17,7 @@ public class WebServer {
 	private TimeManager timeManager;
 	private String documentRoot;
 
-	public OutputStream execute(InputStream input) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+	public void execute(InputStream input, OutputStream out) throws IOException {
 		out.write("HTTP/1.1 200 OK\n".getBytes());
 		out.write(("Date: " + timeManager.nowAsRFC7231() + "\n").getBytes());
 		out.write("Server: MyServer/0.1\n".getBytes());
@@ -37,6 +36,5 @@ public class WebServer {
 				out.write(line.getBytes());
 			}
 		}
-		return out;
 	}
 }
