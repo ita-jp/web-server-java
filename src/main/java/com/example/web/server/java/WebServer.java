@@ -12,16 +12,16 @@ public class WebServer implements Runnable {
     private TimeManager timeManager;
     private String documentRoot;
     private InputStream input;
-    private OutputStream out;
+    private OutputStream output;
 
     private void execute() throws IOException {
-        out.write("HTTP/1.1 200 OK\n".getBytes());
-        out.write(("Date: " + timeManager.nowAsRFC7231() + "\n").getBytes());
-        out.write("Server: MyServer/0.1\n".getBytes());
-        out.write("Connection: Close\n".getBytes());
-        out.write("Content-Type: text/html\n".getBytes()); // TODO introduce writer class?
+        output.write("HTTP/1.1 200 OK\n".getBytes());
+        output.write(("Date: " + timeManager.nowAsRFC7231() + "\n").getBytes());
+        output.write("Server: MyServer/0.1\n".getBytes());
+        output.write("Connection: Close\n".getBytes());
+        output.write("Content-Type: text/html\n".getBytes()); // TODO introduce writer class?
 
-        out.write("\n".getBytes());
+        output.write("\n".getBytes());
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         String[] tokens = reader.readLine().split(" ");
@@ -30,7 +30,7 @@ public class WebServer implements Runnable {
         try (BufferedReader fileReader = Files.newBufferedReader(Paths.get(documentRoot + "/" + path))) {
             String line = null;
             while ((line = fileReader.readLine()) != null) {
-                out.write(line.getBytes());
+                output.write(line.getBytes());
             }
         }
     }
@@ -40,7 +40,7 @@ public class WebServer implements Runnable {
         try {
             execute();
             input.close();
-            out.close();
+            output.close();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
