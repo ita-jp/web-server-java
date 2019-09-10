@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.Socket;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
@@ -21,10 +22,13 @@ public class WebServerTest {
 		// ## Arrange ##
 		val input = new ByteArrayInputStream("GET test.html HTTP/1.1".getBytes());
         val output = new ByteArrayOutputStream();
-        val timeManager = mock(TimeManager.class);
+		val mockSocket = mock(Socket.class);
+		when(mockSocket.getInputStream()).thenReturn(input);
+		when(mockSocket.getOutputStream()).thenReturn(output);
+		val timeManager = mock(TimeManager.class);
         val time = "Wed, 05 Jun 2019 04:02:51 GMT";
         when(timeManager.nowAsRFC7231()).thenReturn(time);
-        val server = new WebServer(timeManager, DOCUMENT_ROOT, input, output);
+        val server = new WebServer(timeManager, DOCUMENT_ROOT, mockSocket);
 
         // ## Act ##
 		server.run();
