@@ -20,14 +20,14 @@ public class WebServerTest {
 	public void test() throws Exception {
 		// ## Arrange ##
 		val input = new ByteArrayInputStream("GET test.html HTTP/1.1".getBytes());
-		val timeManager = mock(TimeManager.class);
-		val time = "Wed, 05 Jun 2019 04:02:51 GMT";
-		when(timeManager.nowAsRFC7231()).thenReturn(time);
-		val server = new WebServer(timeManager, DOCUMENT_ROOT);
+        val output = new ByteArrayOutputStream();
+        val timeManager = mock(TimeManager.class);
+        val time = "Wed, 05 Jun 2019 04:02:51 GMT";
+        when(timeManager.nowAsRFC7231()).thenReturn(time);
+        val server = new WebServer(timeManager, DOCUMENT_ROOT, input, output);
 
-		// ## Act ##
-		val output = new ByteArrayOutputStream();
-		server.execute(input, output);
+        // ## Act ##
+		server.run();
 
 		// ## Assert
 		val actual = output.toString();

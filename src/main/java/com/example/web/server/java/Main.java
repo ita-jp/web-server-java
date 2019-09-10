@@ -12,10 +12,14 @@ import java.net.Socket;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        val webServer = new WebServer(new TimeManager(), "./src/main/resources"); // TODO check document root directory
         try (val serverSocket = new ServerSocket(8080)) {
-            val socket = serverSocket.accept();
-            webServer.execute(socket.getInputStream(), socket.getOutputStream());
+            while (true) {
+                val socket = serverSocket.accept();
+                val in = socket.getInputStream();
+                val out = socket.getOutputStream();
+                val server = new WebServer(new TimeManager(), "./src/main/resources", in, out); // TODO check document root directory
+                new Thread(server).start();
+            }
         }
     }
 
