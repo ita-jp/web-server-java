@@ -6,6 +6,7 @@ import lombok.val;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,21 +18,30 @@ public class WebServer implements Runnable {
     private String documentRoot;
     private Socket socket;
 
+    private void writeLine(OutputStream out, String line) throws IOException {
+        for (final char ch : line.toCharArray()) {
+            out.write((int) ch);
+        }
+        out.write((int) '\r');
+        out.write((int) '\n');
+    }
+
     private void execute() throws IOException {
         val input = socket.getInputStream();
-        val output = socket.getOutputStream();
-        output.write("HTTP/1.1 200 OK\n".getBytes());
-        output.write(("Date: " + timeManager.nowAsRFC7231() + "\n").getBytes());
-        output.write("Server: MyServer/0.1\n".getBytes());
-        output.write("Connection: Close\n".getBytes());
-        output.write("Content-Type: text/html\n".getBytes()); // TODO introduce writer class?
-        output.write("\n".getBytes());
-
         val request = new HttpRequest(input);
+
+        val output = socket.getOutputStream();
+        writeLine(output, "HTTP/1.1 200 OK");
+        writeLine(output, "Date: " + timeManager.nowAsRFC7231());
+        writeLine(output, "Server: MyServer/0.1");
+        writeLine(output, "Connection: Close");
+        writeLine(output, "Content-Type: " + request.getContentType().getMediaType());
+        writeLine(output, "");
+
         try (BufferedReader fileReader = Files.newBufferedReader(Paths.get(documentRoot + "/" + request.getPath()))) {
             String line = null;
             while ((line = fileReader.readLine()) != null) {
-                output.write(line.getBytes());
+                writeLine(output, line);
             }
         }
     }
