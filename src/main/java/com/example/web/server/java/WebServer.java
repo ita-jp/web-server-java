@@ -34,7 +34,7 @@ public class WebServer implements Runnable {
         writeLine(output, "HTTP/1.1 200 OK");
         writeLine(output, "Date: " + timeManager.nowAsRFC7231());
         writeLine(output, "Server: MyServer/0.1");
-        writeLine(output, "Connection: Close");
+        writeLine(output, "Connection: close");
         writeLine(output, "Content-Type: " + request.getContentType().getMediaType());
         writeLine(output, "");
 
