@@ -37,7 +37,7 @@ public class ServerThread implements Runnable {
             return;
         }
 
-        buildOKResponse(request, output, optBufferedReader);
+        buildOKResponse(request, output, optBufferedReader.get());
     }
 
     private void writeLine(OutputStream output, BufferedReader reader) throws IOException {
@@ -49,14 +49,14 @@ public class ServerThread implements Runnable {
         }
     }
 
-    private void buildOKResponse(HttpRequest request, OutputStream output, Optional<BufferedReader> optBufferedReader) throws IOException {
+    private void buildOKResponse(HttpRequest request, OutputStream output, BufferedReader bufferedReader) throws IOException {
         writeLine(output, "HTTP/1.1 200 OK");
         writeLine(output, "Date: " + timeManager.nowAsRFC7231());
         writeLine(output, "Server: MyServer/0.1");
         writeLine(output, "Connection: close");
         writeLine(output, "Content-Type: " + request.getContentType().getMediaType());
         writeLine(output, "");
-        writeLine(output, optBufferedReader.get());
+        writeLine(output, bufferedReader);
     }
 
     private void buildFileNotFoundResponse(OutputStream output) throws IOException {
