@@ -12,7 +12,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class WebServerTest {
+public class ServerThreadTest {
 
 	private static String DOCUMENT_ROOT = "src/test/resources";
 
@@ -28,7 +28,7 @@ public class WebServerTest {
 		val timeManager = mock(TimeManager.class);
         val time = "Wed, 05 Jun 2019 04:02:51 GMT";
         when(timeManager.nowAsRFC7231()).thenReturn(time);
-        val server = new WebServer(timeManager, DOCUMENT_ROOT, mockSocket);
+		val server = new ServerThread(timeManager, DOCUMENT_ROOT, mockSocket);
 
         // ## Act ##
 		server.run();

@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @AllArgsConstructor
-public class WebServer implements Runnable {
+public class ServerThread implements Runnable {
 
     private TimeManager timeManager;
     private String documentRoot;

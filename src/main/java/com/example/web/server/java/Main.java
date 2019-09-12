@@ -14,7 +14,7 @@ public class Main {
         try (val serverSocket = new ServerSocket(8080)) {
             while (true) {
                 val socket = serverSocket.accept();
-                val server = new WebServer(new TimeManager(), "./src/main/resources", socket); // TODO check document root directory
+                val server = new ServerThread(new TimeManager(), "./src/main/resources", socket); // TODO check document root directory
                 val thread = new Thread(server);
                 thread.start();
             }
