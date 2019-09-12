@@ -8,13 +8,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class ServerThread implements Runnable {
 
     private TimeManager timeManager;
+    private FileManager fileManager;
     private String documentRoot;
     private Socket socket;
 
@@ -30,19 +30,43 @@ public class ServerThread implements Runnable {
         val request = HttpRequestFactory.of(socket.getInputStream());
 
         val output = socket.getOutputStream();
+        Optional<BufferedReader> optBufferedReader = fileManager.createBufferedReader(documentRoot + "/" + request.getPath());
+
+        if (!optBufferedReader.isPresent()) {
+            buildFileNotFoundResponse(output);
+            return;
+        }
+
+        buildOKResponse(request, output, optBufferedReader);
+    }
+
+    private void writeLine(OutputStream output, BufferedReader reader) throws IOException {
+        try (Closeable fileReader = reader::close) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                writeLine(output, line);
+            }
+        }
+    }
+
+    private void buildOKResponse(HttpRequest request, OutputStream output, Optional<BufferedReader> optBufferedReader) throws IOException {
         writeLine(output, "HTTP/1.1 200 OK");
         writeLine(output, "Date: " + timeManager.nowAsRFC7231());
         writeLine(output, "Server: MyServer/0.1");
         writeLine(output, "Connection: close");
         writeLine(output, "Content-Type: " + request.getContentType().getMediaType());
         writeLine(output, "");
+        writeLine(output, optBufferedReader.get());
+    }
 
-        try (BufferedReader fileReader = Files.newBufferedReader(Paths.get(documentRoot + "/" + request.getPath()))) {
-            String line = null;
-            while ((line = fileReader.readLine()) != null) {
-                writeLine(output, line);
-            }
-        }
+    private void buildFileNotFoundResponse(OutputStream output) throws IOException {
+        writeLine(output, "HTTP/1.1 404 Not Found");
+        writeLine(output, "Date: " + timeManager.nowAsRFC7231());
+        writeLine(output, "Server: MyServer/0.1");
+        writeLine(output, "Connection: close");
+        writeLine(output, "Content-Type: " + ContentType.TEXT_HTML.getMediaType());
+        writeLine(output, "");
+        writeLine(output, fileManager.createBufferedReaderFor404().get());
     }
 
     @Override

@@ -11,10 +11,13 @@ import java.net.ServerSocket;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        val timeManager = new TimeManager();
+        val fileManager = new FileManager();
+
         try (val serverSocket = new ServerSocket(8080)) {
             while (true) {
                 val socket = serverSocket.accept();
-                val server = new ServerThread(new TimeManager(), "./src/main/resources", socket); // TODO check document root directory
+                val server = new ServerThread(timeManager, fileManager, "./src/main/resources", socket); // TODO check document root directory
                 val thread = new Thread(server);
                 thread.start();
             }
