@@ -14,11 +14,11 @@ public class Main {
         val timeManager = new TimeManager();
         val fileManager = new FileManager();
 
-        try (val serverSocket = new ServerSocket(8080)) {
+        try (val server = new ServerSocket(8080)) {
             while (true) {
-                val socket = serverSocket.accept();
-                val server = new ServerThread(timeManager, fileManager, "./src/main/resources", socket); // TODO check document root directory
-                val thread = new Thread(server);
+                val connection = server.accept();
+                val serverThread = new ServerThread(timeManager, fileManager, "./src/main/resources", connection); // TODO check document root directory
+                val thread = new Thread(serverThread);
                 thread.start();
             }
         }
