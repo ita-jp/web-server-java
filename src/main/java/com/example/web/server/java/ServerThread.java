@@ -16,7 +16,7 @@ public class ServerThread implements Runnable {
     private TimeManager timeManager;
     private FileManager fileManager;
     private String documentRoot;
-    private Socket socket;
+    private Socket connection;
 
     private void writeLine(OutputStream out, String line) throws IOException {
         for (final char ch : line.toCharArray()) {
@@ -27,9 +27,9 @@ public class ServerThread implements Runnable {
     }
 
     private void execute() throws IOException {
-        val request = HttpRequestFactory.of(socket.getInputStream());
+        val request = HttpRequestFactory.of(connection.getInputStream());
 
-        val output = socket.getOutputStream();
+        val output = connection.getOutputStream();
         Optional<BufferedReader> optBufferedReader = fileManager.createBufferedReader(documentRoot + "/" + request.getPath());
 
         if (!optBufferedReader.isPresent()) {
@@ -71,7 +71,7 @@ public class ServerThread implements Runnable {
 
     @Override
     public void run() {
-        try (Closeable closeable = socket::close) {
+        try (Closeable closeable = connection::close) {
             execute();
         } catch (IOException e) {
             throw new IllegalStateException(e);
