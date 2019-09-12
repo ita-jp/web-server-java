@@ -27,8 +27,7 @@ public class WebServer implements Runnable {
     }
 
     private void execute() throws IOException {
-        val input = socket.getInputStream();
-        val request = new HttpRequest(input);
+        val request = HttpRequestFactory.of(socket.getInputStream());
 
         val output = socket.getOutputStream();
         writeLine(output, "HTTP/1.1 200 OK");
