@@ -38,7 +38,7 @@ public class ServerThreadTest {
         when(mockReader.readLine()).thenReturn("<b>test</b>").thenReturn(null);
 
         val fileManager = mock(FileManager.class);
-        when(fileManager.createBufferedReader(any())).thenReturn(Optional.of(mockReader));
+        when(fileManager.createBufferedReader(any(), any())).thenReturn(Optional.of(mockReader));
 
         val server = new ServerThread(timeManager, fileManager, DOCUMENT_ROOT, mockSocket);
 
@@ -78,7 +78,7 @@ public class ServerThreadTest {
         when(mockReader.readLine()).thenReturn("<b>Not Found</b>").thenReturn(null);
 
         val fileManager = mock(FileManager.class);
-        when(fileManager.createBufferedReader(any())).thenReturn(Optional.empty());
+        when(fileManager.createBufferedReader(any(), any())).thenReturn(Optional.empty());
         when(fileManager.createBufferedReaderFor404()).thenReturn(Optional.of(mockReader));
 
         val server = new ServerThread(timeManager, fileManager, DOCUMENT_ROOT, mockSocket);

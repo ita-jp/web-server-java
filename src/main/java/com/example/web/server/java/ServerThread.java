@@ -30,7 +30,7 @@ public class ServerThread implements Runnable {
         val request = HttpRequestFactory.of(connection.getInputStream());
 
         val output = connection.getOutputStream();
-        Optional<BufferedReader> optBufferedReader = fileManager.createBufferedReader(documentRoot + "/" + request.getPath());
+        Optional<BufferedReader> optBufferedReader = fileManager.createBufferedReader(documentRoot, request.getPath());
 
         if (!optBufferedReader.isPresent()) {
             buildFileNotFoundResponse(output);
