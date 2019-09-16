@@ -41,8 +41,8 @@ public class ServerThread implements Runnable {
     }
 
     private void writeLine(OutputStream output, BufferedReader reader) throws IOException {
-        try (Closeable fileReader = reader::close) {
-            String line = null;
+        try (Closeable fileReader = reader) {
+            String line;
             while ((line = reader.readLine()) != null) {
                 writeLine(output, line);
             }
@@ -71,7 +71,7 @@ public class ServerThread implements Runnable {
 
     @Override
     public void run() {
-        try (Closeable closeable = connection::close) {
+        try (Closeable closeable = connection) {
             execute();
         } catch (IOException e) {
             throw new IllegalStateException(e);
